@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Game Tebak Kata - Tebak Kata Lengkap dengan Gambar</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #00ffff;
+    text-align: center;
+  }
+  #nameInputArea {
+    margin-bottom: 20px;
+    padding: 20px 25px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 15px;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 0 20px #00ffff;
+    text-align: center;
+  }
+  #nameInputArea label {
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+  }
+  #playerNameInput {
+    font-size: 20px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: 0 0 8px #0ccafa inset;
+    background: #222;
+    color: #0ff;
+  }
+  #playerNameInput:focus {
+    outline: none;
+    box-shadow: 0 0 15px #00ffff;
+  }
+  #startBtn {
+    margin-top: 14px;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #00ffff;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 18px #00cccc;
+    transition: background 0.3s;
+  }
+  #startBtn:hover {
+    background: #00cccc;
+  }
+  #categorySelection {
+    margin-bottom: 15px;
+  }
+  .categoryBtn {
+    background: #00ffff;
+    color: #111;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 0 8px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00cccc;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+  .categoryBtn:hover {
+    background: #00cccc;
+  }
+  .categoryBtn:disabled {
+    background: #444;
+    color: #666;
+    box-shadow: none;
+    cursor: default;
+  }
+  #gameContainer {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 0 15px #00ffff;
+    max-width: 350px;
+    width: 90%;
+    text-align: center;
+    user-select: none;
+  }
+  #playerInfo {
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: left;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+  }
+  #scoreDisplay {
+    font-weight: bold;
+    font-size: 18px;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  #selectedCategory {
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  #wordDisplay {
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  #clueDisplay {
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 18px;
+    min-height: 24px;
+    color: #a0ffff;
+    user-select: text;
+  }
+  #message {
+    margin: 10px 0 20px 0;
+    height: 24px;
+    font-size: 18px;
+    min-height: 24px;
+    color: #ff6f61;
+    font-weight: bold;
+  }
+  #inputArea {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #wordInput {
+    font-size: 22px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    width: 70%;
+    max-width: 200px;
+    text-align: center;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px #00ffff inset;
+    background: #222;
+    color: #0ff;
+  }
+  #wordInput:focus {
+    outline: none;
+    box-shadow: 0 0 12px #00ffff;
+  }
+  #guessBtn, #skipBtn {
+    font-size: 18px;
+    padding: 8px 14px;
+    margin-left: 8px;
+    border-radius: 8px;
+    border: none;
+    background: #00ffff;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00cccc;
+    transition: background 0.3s;
+    user-select: none;
+  }
+  #guessBtn:hover, #skipBtn:hover {
+    background: #00cccc;
+  }
+  #guessBtn:disabled, #skipBtn:disabled {
+    background: #444;
+    color: #666;
+    cursor: default;
+    box-shadow: none;
+  }
+  #wrongLetters {
+    margin: 10px 0;
+    color: #ff6f61;
+    font-weight: bold;
+    min-height: 20px;
+  }
+  #restartBtn {
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #0ff;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 18px #00cccc;
+    display: none;
+    transition: background 0.3s;
+    user-select: none;
+  }
+  #restartBtn:hover {
+    background: #00cccc;
+  }
+  #imageDisplay {
+    margin-top: 15px;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #00ffff;
+    display: none;
+    max-height: 200px;
+    object-fit: contain;
+  }
+  @media (max-width: 400px) {
+    #wordDisplay {
+      font-size: 18px;
+      letter-spacing: 1.5px;
+    }
+    #wordInput {
+      font-size: 20px;
+      max-width: 150px;
+    }
+    #guessBtn, #restartBtn, #startBtn, .categoryBtn, #skipBtn {
+      font-size: 16px;
+      padding: 8px 14px;
+      margin-left: 4px;
+    }
+  }
+</style>
+</head>
+<body>
+<h1>Game Tebak Kata - Tebak Kata Lengkap dengan Gambar</h1>
+
+<div id="nameInputArea" aria-label="Masukkan nama pemain dan mulai game">
+  <label for="playerNameInput">namain dulu ngab</label>
+  <input type="text" id="playerNameInput" maxlength="20" autocomplete="off" aria-describedby="message" aria-label="Masukkan nama pemain" />
+  <button id="startBtn" aria-label="Mulai permainan">Mulai</button>
+</div>
+
+<div id="categorySelection" role="group" aria-label="Pilih kategori" style="display:none;">
+  <button class="categoryBtn" data-category="Negara">Negara</button>
+  <button class="categoryBtn" data-category="Newan">Hewan</button>
+  <button class="categoryBtn" data-category="Pengetahuan">Pengetahuan Umum</button>
+</div>
+
+<div id="gameContainer" role="main" aria-label="Game Tebak Kata" style="display:none;">
+  <div id="playerInfo" aria-live="polite" aria-atomic="true"></div>
+  <div id="scoreDisplay" aria-live="polite" aria-atomic="true"></div>
+  <div id="selectedCategory" aria-live="polite" style="margin-bottom:12px; font-weight:bold; font-size:18px"></div>
+  <div id="wordDisplay" aria-live="polite" aria-atomic="true" aria-label="Kata yang harus ditebak"></div>
+  <div id="clueDisplay" aria-live="polite" aria-atomic="true" aria-label="Petunjuk kata"></div>
+  <div id="message" role="alert" aria-live="assertive"></div>
+  <div id="inputArea">
+    <label for="wordInput" class="visually-hidden">Masukkan tebakan kata lengkap</label>
+    <input type="text" id="wordInput" autocomplete="off" aria-describedby="message" aria-label="Input tebakan kata lengkap" disabled />
+    <button id="guessBtn" aria-label="Tebak kata" disabled>Tebak</button>
+    <button id="skipBtn" aria-label="Lewati kata" disabled>Lewati</button>
+  </div>
+  <div id="wrongLetters" aria-live="polite" aria-atomic="true"></div>
+  <button id="restartBtn" aria-label="Mulai ulang permainan">Main Lagi</button>
+  <img id="imageDisplay" alt="Gambar tebakan" />
+</div>
+
+<script>
+(() => {
+  const categories = {
+    Negara: [
+      { word: "INDONESIA", clue: "Negara dengan ribuan pulau, ibu kota Jakarta.", image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Indonesia.svg" },
+      { word: "MALAYSIA", clue: "Negara tetangga, terkenal dengan menara kembar Petronas.", image: "https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg" },
+      { word: "JEPANG", clue: "Negara Sakura dan teknologi maju.", image: "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg" },
+      { word: "KOREA", clue: "Negara dengan K-Pop dan drama populer.", image: "https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" },
+      { word: "AUSTRALIA", clue: "Negara benua dengan kanguru.", image: "https://upload.wikimedia.org/wikipedia/en/b/b9/Flag_of_Australia.svg" },
+      { word: "BRAZIL", clue: "Negara di Amerika Selatan terkenal dengan karnaval.", image: "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg" },
+      { word: "KANADA", clue: "Negara besar kedua di dunia dengan daun maple.", image: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg" },
+      { word: "IRAN", clue: "Negara di Timur Tengah dengan sejarah Persia.", image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg" },
+      { word: "MESIR", clue: "Negara piramida dan sungai Nil.", image: "https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Egypt.svg" },
+      { word: "SPANYOL", clue: "Negara tapas, siesta, dan matador.", image: "https://upload.wikimedia.org/wikipedia/en/9/9a/Flag_of_Spain.svg" },
+      { word: "INGGRIS", clue: "Negara yang masih unsur kerajaan.", image: "https://images.app.goo.gl/2ykA7tQFC4xhLfkk7"},
+      { word: "ITALY", clue: "Menara Pisa, menara Roma.", image: "https://images.app.goo.gl/RzcSdQcGWfxuhz6J6"},
+      { word: "GERMANY", clue: "Negara dengan kastil terbanyak.", image: "https://images.app.goo.gl/AWjUEwBwBVn4orG47"},
+      { word: "FRANCE", clue: "Menara Eifel.", image:"https://images.app.goo.gl/JSrPrWHHPrairARr9"},
+      { word: "CHINA", clue: "Negara yang masih menganut komunis.", image: "https://images.app.goo.gl/GSYeCjjWfc543Nji8"},
+      { word: "MEKSIKO", clue: "Masih banyak kartel.", image: "https://images.app.goo.gl/jwKzeMFs6KPkxigN8"},
+      { word: "INDIA", clue: "Negara paling sibuk.", image: "https://images.app.goo.gl/wBF6Sz4CsS62Gcob8"},
+      { word: "SWEDIA", clue: "Perusahaan IKEA.", image:"https://images.app.goo.gl/uk1MUcvL4URNu7eo6"},
+      { word: "BELGIA", clue: "Negara terkenal bir dan coklat.", image: "https://images.app.goo.gl/siGY5kAYjtbXqcEs9"},
+      { word: "THAILAND", clue:"Negara yang tidak pernah dijajah.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/800px-Flag_of_Thailand.svg.png"},
+      { word: "ARAB", clue: "Negara yang menghasilkan kurma terbesar.", image: "https://images.app.goo.gl/6HPGYTcprLFQZcocA"},
+      { word: "SINGAPUR", clue: "Negara yang memiliki patung Merlino.", image: "https://images.app.goo.gl/BsXno8FpdV6EZJxQ8"},
+      { word: "PALESTINE", clue: "Negara yang sering memiliki konflik dengan israel.", image: "https://images.app.goo.gl/76WWinMFXQYTBGoK8"},
+      { word: "PORTUGAL", clue: "Negara Cristiano Ronaldo.", image: "https://images.app.goo.gl/msTZsLZYENVU3Ywk8"},
+      { word: "TURKI", clue: "MUSTAFA KEMAL.", image: "https://images.app.goo.gl/jtZUHg5P9QgwiKSd9"},
+      { word: "KAMBODIA", clue: "Angkor Wat kuil.", image: "https://images.app.goo.gl/HANq3SeErCs9d1a77"},
+      { word: "MYANMAR", clue: "Negara 1000 Pagoda.", image: "https://images.app.goo.gl/W1k9zt2JPJ9nCsqL9"},
+      { word: "ZIMBABWE", clue: "Air terjun Victorya.", image: "https://images.app.goo.gl/gFYtDP7gAmTD4MbZ9"},
+      { word: "BELANDA", clue: "Timnas Pusat.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/250px-Flag_of_the_Netherlands.svg.png"},
+      { word: "RUSSIA", clue: "Negara terbesar di dunia.", image: "https://images.app.goo.gl/GMQjCzaPV2GvDd8K7"},
+      { word: "VIETNAM", clue: "nguyen.", image: ""},
+      { word: "ARGENTINA", clue: "Lionel Messi.", image: ""},
+      { word: "SWISS", clue: " Negara terbersih didunia.", image: ""},
+      { word: "POLANDIA", clue: "Lewandolski.", image: ""},
+      { word: "MONAKO", clue: "bendera sama dengan indo.", image: ""},
+      { word: "JAMAICA", clue: "negara reggae.", image: ""},
+    ],
+    Hewan: [
+      { word: "CHEETAH", clue: "Hewan darat tercepat.", image: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Cheetah_male_Masai_Mara.jpg" },
+      { word: "GAJAH", clue: "Binatang besar dengan belalai.", image: "https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg" },
+      { word: "KANGURU", clue: "Hewan melompat dengan kantong di perut.", image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Kangaroo_Australia_01_11_2020.jpg" },
+      { word: "HARIMAU", clue: "Kucing besar belang-oranye.", image: "https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg" },
+      { word: "ANGSA", clue: "Burung putih yang anggun di danau.", image: "https://upload.wikimedia.org/wikipedia/commons/4/48/Mute_Swan_-_London_-_England_-_UK.jpg" },
+      { word: "JERAPAH", clue: "Hewan berkaki panjang dan leher tinggi.", image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Giraffe_standing.jpg" },
+      { word: "PANDA", clue: "Beruang hitam-putih lucu dari Tiongkok.", image: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG" },
+      { word: "LUMBA-LUMBA", clue: "Mamalia laut pintar yang suka bersosialisasi.", image: "https://upload.wikimedia.org/wikipedia/commons/7/76/Common_dolphin_noaa_6-16-10.jpg" },
+      { word: "KUCING", clue: "Hewan peliharaan yang suka mengeong.", image: "https://upload.wikimedia.org/wikipedia/commons/a/a3/81_INF_DIV_SSI.jpg" },
+      { word: "BURUNG", clue: "Hewan bersayap, bisa terbang.", image: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Great_Tit_tahtoinenparkki.jpg" },
+      { word: "ANJING", clue: "Hewan yang memiliki air liur haram untuk islam.", image: "https://images.app.goo.gl/PAdht21WLuWqYbrw6"},
+      { word: "KELELAWAR", clue: "Hewan nokturnal yang bisa terbang.", image: "https://images.app.goo.gl/fUknhx7wfYQ2e4fTA"},
+      { word: "LEBAH", clue: "Penghasil madu.", image: "https://images.app.goo.gl/ABsZ1oyM2SeHhPnG7"},
+      { word: "UNTA", clue: "Tinggal di padang pasir.", image: "https://images.app.goo.gl/Yzvejsb1Z4jcRBzw9"},
+      { word: "AYAM", clue: "Berkokok di pagi hari.", image: "https://images.app.goo.gl/pSk9gfYKva1Qwkf18"},
+      { word: "KEPITING", clue: "Berjalan menyamping.", image: "https://images.app.goo.gl/AoyJFzpinQNmifA58"},
+      { word: "BUAYA", clue: "Hewan yang hidup di air dan darat.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Nile_crocodile_head.jpg/250px-Nile_crocodile_head.jpg"},
+      { word: "KAMBING", clue: "Hewan qurban.", image: "https://images.app.goo.gl/46DFbrteGyb8SaXa8"},
+      { word: "KELINCI", clue: "Sering muncul di istilah gigi, melompat.", image: "https://images.app.goo.gl/xdWiEV2SvgJMRtWT7"},
+      { word: "KUDA", clue: "Hewan dengan rambut panjang.", image: "https://images.app.goo.gl/5mbBpyYvDsF8NeTZ9"},
+      { word: "BERUANG", clue: "identik dengan Russia.", image: "https://images.app.goo.gl/Pq2FBVnUZ7JEmnG1A"},
+      { word: "LINTAH", clue: "Hewan penghisap darah.", image: "https://images.app.goo.gl/NU1ZbQyknoaAhhPa7"},
+      { word: "NYAMUK", clue: "Hewan DBD.", image: "https://images.app.goo.gl/8pmowUWjFwqa2mobA"},
+      { word: "KUPU-KUPU", clue: "Hewan yang berasal dari ulat.", image: "https://images.app.goo.gl/aUz5UjGn2dDgDzqF7"},
+      { word: "BIAWAK", clue: "Dari suku Paranidae.", image: "https://images.app.goo.gl/XUBsjwFCe8dDURPZA"},
+      { word: "ELANG", clue: "lambang garuda pancasila.", image: "https://images.app.goo.gl/kZjP4hhssgppyXFW9"}
+    ],
+    Pengetahuan: [
+      { word: "GRAVITASI", clue: "Gaya tarik menarik antara benda bermassa.", image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Gravity.svg" },
+      { word: "ATOM", clue: "Partikel kecil pembentuk materi.", image: "https://upload.wikimedia.org/wikipedia/commons/9/93/Atomic_orbital_types.svg" },
+      { word: "HTML", clue: "Bahasa markup untuk membuat halaman web.", image: "https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" },
+      { word: "EKOSISTEM", clue: "Interaksi antara makhluk hidup dan lingkungan.", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Ecosystem_interactions.png" },
+      { word: "DINOSAURUS", clue: "Reptil purba yang sudah punah.", image: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Tyrannosaurus_Rex_Holotype.jpg" },
+      { word: "TELESKOP", clue: "Alat untuk melihat benda jauh, seperti bintang.", image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Hubble_Space_Telescope_-_June_2009.jpg" },
+      { word: "OZON", clue: "Lapisan atmosfer yang melindungi Bumi dari sinar UV.", image: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Ozone_March_2003_image.jpg" },
+      { word: "VIRUS", clue: "Mikroorganisme penyebab penyakit.", image: "https://upload.wikimedia.org/wikipedia/commons/e/e5/3D_medical_animation_coronavirus_structure.png" },
+      { word: "LASER", clue: "Sinar yang sangat terfokus dan kuat.", image: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Laser_beam_illustration.svg" },
+      { word: "MATAHARI", clue: "Bintang pusat tata surya kita.", image: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Sun_white_light.jpg" },
+      { word: "THOMAS ALVA EDISON", clue: "Penemu bola lampu pijar.", image: "https://images.app.goo.gl/FTKfN8gXBiyvQq6z8"},
+      { word: "SATURNUS", clue: "Planet yang memiliki satelit terbanyak.", image: "https://images.app.goo.gl/MyaxEAzmPHCropsB6"},
+      { word: "PERAK", clue: "Unsur kimia simbol AG.", image: ""},
+      { word: "INDIA", clue: "Penduduk terbanyak ke-2 di dunia.", image: "https://images.app.goo.gl/VXadaMpZfexfyef88"},
+      { word: "MERKURIUS", clue: "Planet terdekat dari matahari.", image: "https://images.app.goo.gl/Qc3bNVddcdoq5zaR9"},
+      { word: "BOROBUDUR", clue: "Candi Budha terbesar di dunia, terletak di Indonesia.", image: "https://images.app.goo.gl/fSUX2gWZmYLkSGSEA"},
+      { word: "MAHATMAGANDI", clue: "Tokoh India yang memiliki filosofi tanpa kekerasan.", image: "https://images.app.goo.gl/Ub3JUcs3sMuYkFhF8"},
+      { word: "JEPANG", clue: "Negara Matahari Terbit.", image: "https://images.app.goo.gl/bPq3YkDi2HTs41td9"},
+      { word: "MONA LISA", clue: "Lukisan Terkenal Leonardo Da Vinci.", image: "https://images.app.goo.gl/L5KsVSTjJWPaGtNE9"},
+      { word: "POSEIDON", clue: "Dewa Laut dalam mitologi Yunani.", image: "https://images.app.goo.gl/oXtYEUGxZG9pxUZu9"},
+      { word: "ISAAC NEWTON", clue: "Bapak Gravitasi.", image: "https://images.app.goo.gl/p2aVSEqaDtJZ2pwS7"},
+      { word: "KLOROFIL", clue: "Zat hijau daun berperan fotosintetis.", image: "https://images.app.goo.gl/4HPW9jn9pnt8KsSt6"},
+      { word: "ALEXANDER GRAHAM BELL", clue: "Penemu telefon pertama kali.", image: "https://images.app.goo.gl/aD9Q15WV2DGNaWtH7"},
+      { word: "PALUNG MARIANA", clue: "Palung terdalam di dunia.", image: "https://images.app.goo.gl/dY8EMdRxLwf2gR3T8"},
+      { word: "IR SOEKARNO", clue: "Presiden pertama di indonesia.", image: "https://images.app.goo.gl/xRRxeiNVB6o7UmMN9"},
+      { word: "7", clue: "Berapa Jumlah Planet yang ada di tata surya.", image: "https://images.app.goo.gl/LuxMKpDDfhwUeCG27"},
+      { word: "ARSENAL", clue: "Club bola Inggris yang punya piala emas.", image: "https://images.app.goo.gl/DLY56zek4HrE9HsJ9"},
+      { word: "BAGDAD", clue: "Perpustakaan dunia.", image: ""},
+      { word: "AUGUSTE COMTE", clue: " Bapak Sosiologi dunia.", image: ""},
+      { word: "TAJ MAHAL", clue: "Bangunan terbesar di India.", image: ""}, 
+      { word: "ADOLF HITLER", clue: "Pemimpin Nazi.", image: ""},
+      { word: "CRISTOPER COLLOMBUS", clue: "Orang yang menemukan benua Amerika.", image: ""},
+      { word: "KONFLIK FOSO", clue: "Konflik antar umat beragama di indonesia.", image: ""} 
+    ]
+  };
+
+  let chosenCategory = null;
+  let chosenWord = "";
+  let chosenClue = "";
+  let chosenImage = "";
+  let score = 0;
+  let playerName = "";
+
+  const playerNameInput = document.getElementById('playerNameInput');
+  const startBtn = document.getElementById('startBtn');
+  const categoryButtons = document.querySelectorAll('.categoryBtn');
+  const selectedCategoryDiv = document.getElementById('selectedCategory');
+  const wordDisplay = document.getElementById('wordDisplay');
+  const clueDisplay = document.getElementById('clueDisplay');
+  const message = document.getElementById('message');
+  const wordInput = document.getElementById('wordInput');
+  const guessBtn = document.getElementById('guessBtn');
+  const skipBtn = document.getElementById('skipBtn');
+  const wrongLettersDiv = document.getElementById('wrongLetters');
+  const restartBtn = document.getElementById('restartBtn');
+  const playerInfo = document.getElementById('playerInfo');
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  const categorySelectionDiv = document.getElementById('categorySelection');
+  const gameContainer = document.getElementById('gameContainer');
+  const nameInputArea = document.getElementById('nameInputArea');
+  const imageDisplay = document.getElementById('imageDisplay');
+
+  function updatePlayerInfo() {
+    playerInfo.textContent = `Pemain: ${playerName}`;
+    scoreDisplay.textContent = `Skor: ${score}`;
+  }
+
+  function showClue() {
+    clueDisplay.textContent = "Petunjuk: " + chosenClue;
+  }
+
+  function showWordLength() {
+    wordDisplay.textContent = Array.from(chosenWord).map(() => "_").join(" ");
+  }
+
+  function startGame(category) {
+    if (usedWords.length === categories[category].length) {
+      message.textContent = "Semua pertanyaan di kategori ini sudah terjawab!";
+      return;
+    }
+
+    let availableWords = categories[category].filter(item => !usedWords.includes(item.word));
+    if (availableWords.length === 0) {
+      message.textContent = "Semua pertanyaan di kategori ini sudah terjawab!";
+      return;
+    }
+
+    const chosenData = availableWords[Math.floor(Math.random() * availableWords.length)];
+    chosenCategory = category;
+    chosenWord = chosenData.word.toUpperCase();
+    chosenClue = chosenData.clue;
+    chosenImage = chosenData.image;
+    usedWords.push(chosenWord);
+    message.textContent = "";
+    message.style.color = "#ff6f61";
+    wordInput.value = "";
+    wrongLettersDiv.textContent = "";
+    imageDisplay.style.display = "none";
+    selectedCategoryDiv.textContent = "Kategori: " + (category === "negara" ? "Negara" : category === "hewan" ? "Hewan" : "Pengetahuan Umum");
+    wordInput.disabled = false;
+    guessBtn.disabled = false;
+    skipBtn.disabled = false;
+    restartBtn.style.display = "none";
+    categoryButtons.forEach(btn => btn.disabled = true);
+    showClue();
+    showWordLength();
+    wordInput.focus();
+  }
+
+  function endGame(win, skipped = false) {
+    wordInput.disabled = true;
+    guessBtn.disabled = true;
+    skipBtn.disabled = true;
+    restartBtn.style.display = "inline-block";
+    categoryButtons.forEach(btn => btn.disabled = false);
+    if (win || skipped) {
+      imageDisplay.src = chosenImage;
+      imageDisplay.alt = `Gambar dari ${chosenWord}`;
+      imageDisplay.style.display = "block";
+    } else {
+      imageDisplay.style.display = "none";
+    }
+  }
+
+  function guessWord() {
+    if (!chosenCategory) {
+      message.textContent = "Pilih kategori terlebih dahulu!";
+      return;
+    }
+
+    const guess = wordInput.value.trim().toUpperCase();
+    wordInput.value = "";
+    if (!guess) {
+      message.textContent = "jawaban dulu cok!";
+      return;
+    }
+
+    if (guess === chosenWord) {
+      score += 50;
+      message.style.color = "#0f0";
+      message.textContent = `Gacorr kang! Kata: ${chosenWord}`;
+      updatePlayerInfo();
+      endGame(true);
+    } else {
+      message.style.color = "#f44";
+      message.textContent = "Nice try kawan!";
+    }
+  }
+
+  function skipWord() {
+    if (!chosenCategory) {
+      message.textContent = "Pilih kategori dulu der!";
+      return;
+    }
+    message.style.color = "#ffa500";
+    message.textContent = `Kata dilewati! Jawaban benar: ${chosenWord}`;
+    endGame(false, true);
+  }
+
+  function restartGame() {
+    if (!chosenCategory) {
+      message.textContent = "Pilih kategori terlebih dahulu!";
+      return;
+    }
+    message.style.color = "#ff6f61";
+    message.textContent = "";
+    startGame(chosenCategory);
+    imageDisplay.style.display = "none";
+  }
+
+  function startAll() {
+    playerName = playerNameInput.value.trim() || "Pemain";
+    score = 0;
+    usedWords = [];
+    updatePlayerInfo();
+    nameInputArea.style.display = "none";
+    categorySelectionDiv.style.display = "block";
+    gameContainer.style.display = "block";
+  }
+
+  startBtn.addEventListener("click", () => {
+    if (playerNameInput.value.trim() === "") {
+      alert("Masukin nama kawan.");
+      playerNameInput.focus();
+      return;
+    }
+    startAll();
+  });
+
+  playerNameInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") {
+      startBtn.click();
+    }
+  });
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      startGame(btn.getAttribute("data-category"));
+    });
+  });
+
+  guessBtn.addEventListener("click", guessWord);
+  wordInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") guessWord();
+  });
+  skipBtn.addEventListener("click", skipWord);
+  restartBtn.addEventListener("click", restartGame);
+
+})();
+</script>
+</body>
+</html>
